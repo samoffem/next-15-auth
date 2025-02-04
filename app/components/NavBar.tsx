@@ -8,9 +8,10 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
+  Link
 } from "@heroui/react";
+
 import { useState } from "react";
 
 export const AcmeLogo = () => {
@@ -43,7 +44,7 @@ export default function App() {
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
+    <Navbar onMenuOpenChange={setIsMenuOpen} isBordered>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -77,9 +78,9 @@ export default function App() {
           <Link href="#">Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
+            <Button as={Link} color="primary" href="/auth/signup" variant="flat">
+                Sign Up
+            </Button>
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
@@ -91,7 +92,7 @@ export default function App() {
                 index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
               }
               href="#"
-              size="lg"
+              //size="lg"
             >
               {item}
             </Link>
