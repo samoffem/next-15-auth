@@ -4,6 +4,7 @@ import { UserIcon } from "@heroicons/react/20/solid"
 import { Button, Input } from "@heroui/react"
 import Link from "next/link";
 import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const FormSchema = z.object({
@@ -25,34 +26,41 @@ const FormSchema = z.object({
     confirmPassword: z
         .string()
         .min(6, "Password must be atleast 6 characters")
-        .max(50, "Password must be less than 50 characters")
+        .max(50, "Password must be less than 50 characters"),
+    
 }).refine(data=> data.password === data.confirmPassword, {
     message: "Password and confirm password dont match",
     path: ["password", "confirmPassword"]
 })
 
+type InputType = z.infer<typeof FormSchema>
+
 const SignupForm = () => {
     const [isVisible, setIsVisible] = useState(false);
-
     const toggleVisibility = () => setIsVisible(!isVisible);
+    const {register, handleSubmit, reset, control} = useForm<InputType>()
+
+    const saveUser: SubmitHandler<InputType> = async (data)=>{
+        console.log(data)
+    }
 
   return (
    
         <div className="w-[500px] border border-gray-400 px-5 py-4 rounded-lg">
             <h3 className="mb-2 font-semibold text-xl">Registration</h3>
 
-            <form>
+            <form onSubmit={handleSubmit(saveUser)}>
                 <div className="flex flex-col gap-4">
                     <div className="flex gap-2">
-                        <Input label="First Name" size="sm" />
-                        <Input label="Last Name" size="sm"  />
+                        <Input {...register("firstName")} label="First Name" size="sm" />
+                        <Input {...register("lastName")} label="Last Name" size="sm"  />
                     </div>
-                    <Input label="Email" size="md" type="email" />
+                    <Input {...register("email")} label="Email" size="md" type="email" />
                     <Input
                         className=""
                         
                         label="Password"
-
+                        {...register("password")}
                         endContent={
                             <button
                               aria-label="toggle password visibility"
@@ -75,12 +83,16 @@ const SignupForm = () => {
                     />
                     <Input
                         className=""
+                        {...register("confirmPassword")}
                         label="Confirm password"
                         type={isVisible ? "text" : "password"}
                     />
                 </div>
-               
-                <Button color="primary" variant="solid" className="w-full mt-5">
+                {/* <Controller 
+                    control={control}
+                    name="accep"
+                /> */}
+                <Button type="submit" color="primary" variant="solid" className="w-full mt-5">
                     Register Now
                 </Button>
 
