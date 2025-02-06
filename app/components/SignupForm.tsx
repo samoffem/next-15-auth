@@ -71,10 +71,16 @@ const SignupForm = () => {
                             label="Last Name" size="sm"  
                         />
                     </div>
-                    <Input {...register("email")} label="Email" size="md" type="email" />
+                    <Input
+                        errorMessage={errors.email?.message}
+                        isInvalid = {!!errors.email}
+                        {...register("email")} 
+                        label="Email" size="md" type="email" 
+                    />
                     <Input
                         className=""
-                        
+                        errorMessage={errors.password?.message}
+                        isInvalid = {!!errors.password}
                         label="Password"
                         {...register("password")}
                         endContent={
@@ -99,6 +105,8 @@ const SignupForm = () => {
                     />
                     <Input
                         className=""
+                        errorMessage={errors.confirmPassword?.message}
+                        isInvalid = {!!errors.confirmPassword}
                         {...register("confirmPassword")}
                         label="Confirm password"
                         type={isVisible ? "text" : "password"}
