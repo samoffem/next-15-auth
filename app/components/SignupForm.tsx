@@ -3,8 +3,9 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 import { UserIcon } from "@heroicons/react/20/solid"
 import { Button, Input } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { passwordStrength } from "check-password-strength";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -39,9 +40,14 @@ type InputType = z.infer<typeof FormSchema>
 const SignupForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
-    const {register, handleSubmit, reset, control, formState: {errors}} = useForm<InputType>({
+    const {register, handleSubmit, reset, control,watch, formState: {errors}} = useForm<InputType>({
         resolver: zodResolver(FormSchema)
     })
+    const [passStrength, setPasswordStrength] = useState(0)
+
+    useEffect(()=>{
+        setPasswordStrength(passwordStrength(watch().password).id)
+    }, [watch().password])
 
     const saveUser: SubmitHandler<InputType> = async (data)=>{
         console.log(data)
