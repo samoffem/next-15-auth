@@ -2,8 +2,10 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 import { UserIcon } from "@heroicons/react/20/solid"
 import { Button, Input } from "@heroui/react"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { passwordStrength } from "check-password-strength";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -38,11 +40,19 @@ type InputType = z.infer<typeof FormSchema>
 const SignupForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
-    const {register, handleSubmit, reset, control} = useForm<InputType>()
+    const {register, handleSubmit, reset, control,watch, formState: {errors}} = useForm<InputType>({
+        resolver: zodResolver(FormSchema)
+    })
+    const [passStrength, setPasswordStrength] = useState(0)
+
+    useEffect(()=>{
+        setPasswordStrength(passwordStrength(watch().password).id)
+    }, [watch().password])
 
     const saveUser: SubmitHandler<InputType> = async (data)=>{
         console.log(data)
     }
+
 
   return (
    
@@ -52,13 +62,31 @@ const SignupForm = () => {
             <form onSubmit={handleSubmit(saveUser)}>
                 <div className="flex flex-col gap-4">
                     <div className="flex gap-2">
-                        <Input {...register("firstName")} label="First Name" size="sm" />
-                        <Input {...register("lastName")} label="Last Name" size="sm"  />
+                        <Input 
+                            errorMessage={errors.firstName?.message}
+                            isInvalid = {!!errors.firstName}
+                            {...register("firstName")} 
+                            label="First Name" 
+                            size="sm" 
+                        />
+                       
+                        <Input 
+                            errorMessage={errors.lastName?.message}
+                            isInvalid = {!!errors.lastName}
+                            {...register("lastName")} 
+                            label="Last Name" size="sm"  
+                        />
                     </div>
-                    <Input {...register("email")} label="Email" size="md" type="email" />
+                    <Input
+                        errorMessage={errors.email?.message}
+                        isInvalid = {!!errors.email}
+                        {...register("email")} 
+                        label="Email" size="md" type="email" 
+                    />
                     <Input
                         className=""
-                        
+                        errorMessage={errors.password?.message}
+                        isInvalid = {!!errors.password}
                         label="Password"
                         {...register("password")}
                         endContent={
@@ -83,6 +111,8 @@ const SignupForm = () => {
                     />
                     <Input
                         className=""
+                        errorMessage={errors.confirmPassword?.message}
+                        isInvalid = {!!errors.confirmPassword}
                         {...register("confirmPassword")}
                         label="Confirm password"
                         type={isVisible ? "text" : "password"}
