@@ -2,6 +2,7 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 import { UserIcon } from "@heroicons/react/20/solid"
 import { Button, Input } from "@heroui/react"
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -38,11 +39,14 @@ type InputType = z.infer<typeof FormSchema>
 const SignupForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(!isVisible);
-    const {register, handleSubmit, reset, control} = useForm<InputType>()
+    const {register, handleSubmit, reset, control, formState: {errors}} = useForm<InputType>({
+        resolver: zodResolver(FormSchema)
+    })
 
     const saveUser: SubmitHandler<InputType> = async (data)=>{
         console.log(data)
     }
+
 
   return (
    
@@ -52,8 +56,20 @@ const SignupForm = () => {
             <form onSubmit={handleSubmit(saveUser)}>
                 <div className="flex flex-col gap-4">
                     <div className="flex gap-2">
-                        <Input {...register("firstName")} label="First Name" size="sm" />
-                        <Input {...register("lastName")} label="Last Name" size="sm"  />
+                        <Input 
+                            errorMessage={errors.firstName?.message}
+                            isInvalid = {!!errors.firstName}
+                            {...register("firstName")} 
+                            label="First Name" 
+                            size="sm" 
+                        />
+                       
+                        <Input 
+                            errorMessage={errors.lastName?.message}
+                            isInvalid = {!!errors.lastName}
+                            {...register("lastName")} 
+                            label="Last Name" size="sm"  
+                        />
                     </div>
                     <Input {...register("email")} label="Email" size="md" type="email" />
                     <Input
