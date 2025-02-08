@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import PasswordStrength from "./PasswordStrength";
+import { registerUser } from "@/lib/actions/authActions";
 
 const FormSchema = z.object({
     firstName: z
@@ -52,6 +53,14 @@ const SignupForm = () => {
 
     const saveUser: SubmitHandler<InputType> = async (data)=>{
         console.log(data)
+
+        const {confirmPassword, ...user} = data
+        try {
+            const result = await registerUser(user)
+            console.log("user created")
+        } catch (error) {
+            console.log("error occured", error)
+        }
     }
 
 
