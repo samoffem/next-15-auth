@@ -52,7 +52,7 @@ const SignupForm = () => {
     }, [watch().password])
 
     const saveUser: SubmitHandler<InputType> = async (data)=>{
-        console.log(data)
+        
 
         const {confirmPassword, ...user} = data
         try {
