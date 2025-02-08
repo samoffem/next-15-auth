@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import PasswordStrength from "./PasswordStrength";
 
 const FormSchema = z.object({
     firstName: z
@@ -109,6 +110,7 @@ const SignupForm = () => {
                         type={isVisible ? "text" : "password"}
                         
                     />
+                    <PasswordStrength passStrength={passStrength} />
                     <Input
                         className=""
                         errorMessage={errors.confirmPassword?.message}
